@@ -2,8 +2,8 @@ package com.demo.tests;
 
 import org.testng.annotations.Test;
 
+import com.demo.data.ConstantsData;
 import com.demo.main.WebDriverManager;
-import com.demo.pages.ProductFilterPage;
 import com.demo.pages.ProductsPage;
 import com.demo.utility.Utility;
 
@@ -19,43 +19,16 @@ import org.testng.annotations.AfterTest;
 
 public class FilterVerifyTest extends WebDriverManager {
 	ProductsPage objProduct;
-	ProductFilterPage objProductFilter;
+	
 
 	@Test
 	public void filterproduct() {
-		boolean filter = false;
 		objProduct = new ProductsPage(driver);
-		objProductFilter = new ProductFilterPage(driver);
-		explicitWaitClickable(objProduct.womenLink);
-		elementClick(objProduct.womenLink);
-		objProduct.cotton.click();
-		Scroll(0, 500);
-		explicitWaitinvisiblity(objProduct.loader);
-		Utility.waitfor(10);
-		List<WebElement> product = objProduct.searchcottonResults;
-		System.out.println(product.size());
-		int test = product.size();
-		for (int i = 0; i < test; i++) {
-			Utility.waitfor(3);
-
-			WebElement producttest = product.get(i);
-			Actions action = new Actions(driver);
-			action.moveToElement(producttest).build().perform();
-
-			explicitWaitClickable(objProduct.moreButton_sk);
-			objProduct.moreButton.get(i).click();
-			waitForPageLoad();
-			String expected = objProductFilter.detailcotton.getText();
-			System.out.println(expected);
-			if (expected.contains("Cotton")) {
-				filter = true;
-			} else {
-				filter = false;
-			}
-
-			driver.navigate().back();
-		}
-		Assert.assertTrue(filter);
+		objProduct.selectCategoryWomen();
+		objProduct.applyMaterialFilter(ConstantsData.MATERIAL_TYPE);
+		boolean filterVerified=objProduct.verifyMaterialFilter(ConstantsData.MATERIAL_TYPE);
+		Assert.assertTrue(filterVerified);
 	}
 
+	
 }

@@ -6,6 +6,7 @@ import com.demo.main.WebDriverManager;
 import com.demo.pages.ProductsPage;
 import com.demo.pages.ShoppingCartPage;
 import com.demo.utility.Utility;
+import com.demo.utility.WebElementHandlers;
 
 import org.testng.annotations.BeforeTest;
 
@@ -20,22 +21,13 @@ public class CartTest extends WebDriverManager {
 	ShoppingCartPage objCart;
 	ProductsPage objProduct;
 
-	@Test(priority = 20)
+	@Test(priority = 6)
 	public void cart() {
-		objCart = new ShoppingCartPage(driver);
 		objProduct = new ProductsPage(driver);
-		Scroll(0, -1200);
-		explicitWaitClickable(objProduct.womenLink);
-		Utility.waitfor(2);
-		waitForPageLoad();
-		Actions action = new Actions(driver);
-		action.moveToElement(objCart.cart).build().perform();
-		Utility.waitfor(7);
-		List<WebElement> productslist = objCart.cartproducts;
-		click(objCart.remove);
-		Utility.waitfor(3);
-		int size = productslist.size();
-		System.out.println("Cart empty msg" + size);
+		objProduct.selectCategoryWomen();
+		objCart = new ShoppingCartPage(driver);
+		WebElementHandlers.actionsMove(objCart.cart);
+		int size=objCart.productDeleteFromCart();
 		Assert.assertTrue(size == 0);
 
 	}

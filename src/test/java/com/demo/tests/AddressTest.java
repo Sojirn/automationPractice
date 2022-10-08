@@ -19,67 +19,32 @@ public class AddressTest extends WebDriverManager {
 	@Test(priority = 9)
 	public void address() {
 		objAddressPage = new AddressPage(driver);
-		Scroll(0, 1250);
-		click(objAddressPage.adresslink);
-		waitForPageLoad();
-		explicitWaitvisiblity(objAddressPage.addanaddresslink);
-		click(objAddressPage.addanaddresslink);
-		HashMap<String,String> address = RandomData.getAddressData();
-		sendText(objAddressPage.company,address.get("company"));
-		sendText(objAddressPage.address1,address.get("address1"));
-		sendText(objAddressPage.address2,address.get("address2"));
-		sendText(objAddressPage.city,address.get("city"));
-		dropDown(objAddressPage.state).selectByIndex(3);
-		sendText(objAddressPage.postalcode,address.get("postalcode"));
-		sendText(objAddressPage.phone,address.get("phone"));
-		sendText(objAddressPage.phone,address.get("mobile"));
-		sendText(objAddressPage.additional,address.get("additional"));
-		objAddressPage.alias.clear();
-		Utility.waitfor(2);
-		sendText(objAddressPage.alias,address.get("expected"));
-		objAddressPage.submit.click();
-		Utility.waitfor(10);
-		waitForPageLoad();
-		explicitWaitvisiblity(objAddressPage.addressheadingtest1);
-		List<WebElement> addressheading = objAddressPage.addressheadingtest;
-		
-		Assert.assertTrue(isListContainsText(addressheading, address.get("expected")));
+		objAddressPage.addressPageNavigation();
+		objAddressPage.addaddressPageNavigation();
+		HashMap<String,String> address=RandomData.getAddressData();
+		objAddressPage.enterAddressDetails(address);
+		objAddressPage.addressPageNavigation();
+		boolean addAddressVerify=objAddressPage.addAddressVerification(address);
+		Assert.assertTrue(addAddressVerify);
 
 	}
 
-	@Test(priority = 10)
-	public void checkoutdelete() throws InterruptedException {
+	@Test(priority = 11)
+	public void addressDelete() throws InterruptedException {
 		objAddressPage = new AddressPage(driver);
-		List<WebElement> addresslist = objAddressPage.addressheadingtest;
-		explicitWaitClickable(addresslist.get(1));
-		String addressname=getText(addresslist.get(1));
-		System.out.println(addressname);
-		List<WebElement> del = objAddressPage.delete;
-		explicitWaitClickable(del.get(1));
-		click(del.get(1));
-		alertcheck("accept", "");
-		Assert.assertFalse(isListContainsText(del, addressname));
+		String addresstobeDeleted=objAddressPage.selectAddresstobeDeleted(1);
+		objAddressPage.deleteAddress(1);
+		objAddressPage.verifyDelete(addresstobeDeleted);
 		}
 
-	@Test(priority = 11)
-	public void update() {
+	@Test(priority = 10)
+	public void addressUpdate() {
 		objAddressPage = new AddressPage(driver);
-		List<WebElement> update = objAddressPage.updatelist;
-		explicitWaitClickable(update.get(1));
-		click(update.get(1));
-		Utility.waitfor(5);
-		waitForPageLoad();
-		explicitWaitClickable(objAddressPage.firstname);
-		HashMap<String,String> address = RandomData.getAddressData();
-		objAddressPage.firstname.clear();
-		sendText(objAddressPage.firstname,address.get("updatefirstname"));
-		sendText(objAddressPage.alias,address.get("additionalupdate"));
-		click(objAddressPage.submit);
-		waitForPageLoad();
-		Utility.waitfor(7);
-		List<WebElement> firstname = objAddressPage.addressfirstname;
-		String firstnameupdated=getText(firstname.get(1));
-		Assert.assertTrue(address.get("updatefirstname").equalsIgnoreCase(firstnameupdated));
+		objAddressPage.addresstobeUpdated(1);
+		HashMap<String,String> address=RandomData.getAddressData();
+		objAddressPage.updateFirstname(address, 1);
+		String firstnameUpdated=objAddressPage.verifyUpdatedFirstname(address);
+		Assert.assertTrue(address.get("updatefirstname").equalsIgnoreCase(firstnameUpdated));
 		
 
 	}

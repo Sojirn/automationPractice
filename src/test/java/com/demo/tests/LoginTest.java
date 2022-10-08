@@ -2,6 +2,7 @@ package com.demo.tests;
 
 import org.testng.annotations.Test;
 import com.demo.data.ConstantsData;
+import com.demo.data.RandomData;
 import com.demo.main.WebDriverManager;
 import com.demo.pages.LoginPage;
 import com.demo.utility.Utility;
@@ -14,44 +15,18 @@ public class LoginTest extends WebDriverManager {
 	LoginPage objLogin;
 
 	@Test(priority = 2, enabled = true, groups = { "sanity" })
-	public void validlogin() throws IOException {
-		Utility.waitfor(10);
+	public void login() throws IOException {
 		objLogin = new LoginPage(driver);
-		objLogin.signIn.click();
-		WebElement test = objLogin.wishlist;
-		String username = Utility.readExcelData(0, 1);
-		String password = Utility.readExcelData(0, 2);
-		objLogin.email.sendKeys(username);
-		objLogin.password.sendKeys(password);
-		objLogin.submit.click();
-		explicitWaitvisiblity(test);
-		String ActualUrl = driver.getCurrentUrl();
-		Assert.assertTrue(ActualUrl.equals(ConstantsData.URL_LOGGED_IN), "Unable to Login");
+		objLogin.login(RandomData.getValidUserData());
+		WebElement element=objLogin.validlogin();
+		Assert.assertTrue(element.isDisplayed());
+}
 
-	}
-
-	@Test(priority = 1, enabled = true, groups = { "sanity" })
+	@Test(priority = 1, enabled =true, groups = { "sanity" })
 	public void invalidLogin() throws IOException {
-
-		objLogin = new LoginPage(driver);
-		Utility.waitfor(10);
-		objLogin.signIn.click();
-
-		String username = Utility.readExcelData(1, 1);
-		String password = Utility.readExcelData(1, 2);
-		WebElement emailtest = objLogin.email;
-
-		Utility.waitfor(6);
-
-		objLogin.email.sendKeys(username);
-		objLogin.password.sendKeys(password);
-		objLogin.submit.click();
-		explicitWaitvisiblity(emailtest);
-
-		String ActualMsg = objLogin.errorMessage.getText();
-		Assert.assertTrue(ActualMsg.contains(ConstantsData.ERROR_LOGIN), "Logged in not done as expected");
+        objLogin = new LoginPage(driver);
+		objLogin.login(RandomData.getInValidUserData());
+		Assert.assertTrue(objLogin.inValid().contains(ConstantsData.ERROR_LOGIN), "Logged in not done as expected");
 		driver.navigate().refresh();
-
-	}
-
+}
 }

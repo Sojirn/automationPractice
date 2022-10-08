@@ -2,6 +2,7 @@ package com.demo.tests;
 
 import org.testng.annotations.Test;
 
+import com.demo.data.ConstantsData;
 import com.demo.main.WebDriverManager;
 import com.demo.pages.LoginPage;
 
@@ -15,10 +16,9 @@ public class SignOutTest extends WebDriverManager{
   @Test(priority=4,groups= {"smoke"})
   public void logout() {
 	  objLogin=new LoginPage(driver);
-	  objLogin.signOut.click();
-	  explicitWaitvisiblity(objLogin.password);
-	  String expected=objLogin.signIn.getText();
-	  Assert.assertTrue(expected.contains("Sign in"));
+	  objLogin.signOutClick();
+	  boolean verified=objLogin.verifySignout(ConstantsData.Sign_In_Text);
+	  Assert.assertTrue(verified);
 	 
   }
   

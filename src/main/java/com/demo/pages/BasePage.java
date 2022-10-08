@@ -9,9 +9,9 @@ public class BasePage {
 	
 	WebDriver driver;
 
-	public BasePage(WebDriver driver2) {
+	public BasePage(WebDriver driver) {
 		// TODO Auto-generated constructor stub
-		driver = driver2;
+		this.driver = driver;
 		PageFactory.initElements(driver, this);
 	}
 

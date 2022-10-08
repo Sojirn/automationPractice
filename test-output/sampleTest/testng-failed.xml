@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="Failed suite [sampleTest]" guice-stage="DEVELOPMENT">
+  <test thread-count="5" name="sample-Test(failed)">
+    <parameter name="Browser" value="edge"/>
+    <groups>
+      <run>
+        <include name="smoke"/>
+      </run>
+    </groups>
+    <classes>
+      <class name="com.demo.tests.SearchProductTest">
+        <methods>
+          <include name="searchTest" invocation-numbers="1 2"/>
+          <include name="beforeTest"/>
+        </methods>
+      </class> <!-- com.demo.tests.SearchProductTest -->
+    </classes>
+  </test> <!-- sample-Test(failed) -->
+</suite> <!-- Failed suite [sampleTest] -->

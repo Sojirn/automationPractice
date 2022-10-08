@@ -2,9 +2,17 @@ package com.demo.pages;
 
 import java.util.List;
 
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.FindBy;
+import org.testng.Assert;
+
+import com.demo.main.WebDriverManager;
+import com.demo.utility.Utility;
+import com.demo.utility.Waits;
+import com.demo.utility.WebElementHandlers;
 
 public class ProductsPage extends BasePage{
 
@@ -47,9 +55,9 @@ public class ProductsPage extends BasePage{
 	public WebElement AddtoCart;*/
 	
 	@FindBy (xpath="//*[@id=\"center_column\"]/h1/span[1]")
-	public WebElement TshirtText;
+	public WebElement tshirtText;
 
-	@FindBy (xpath="//div[@id=\"layered_ajax_loader\"]/p/img")
+	@FindBy (xpath="//div[@id='layered_ajax_loader'][contains(@style,opacity)]")
 	public WebElement loader;
 			
 	@FindBy (id="quantity_wanted")
@@ -137,4 +145,226 @@ public class ProductsPage extends BasePage{
 	@FindBy (xpath="//p[@class='fancybox-error']")
 	public WebElement wishlistAlert;
 	
+	@FindBy(xpath = "//table[@class=\"table-data-sheet\"]/tbody/tr/td[2]")
+	public WebElement detailcotton;
+	
+	@FindBy (xpath="//*[@class='product_list grid row']/li//a")
+	public WebElement tshirt;
+	
+	WebDriverManager objWebDriver;
+	
+	public void selectCategoryWomen()
+	{   
+
+		Waits.explicitWaitClickable(womenLink);
+		WebElementHandlers.elementClick(womenLink);
+		WebDriverManager.waitForPageLoad();
+		WebElementHandlers.scroll(0, 1000);
+	}
+	
+	public WebElement getProduct(int i) {
+		Waits.waitForPageLoad();
+		return searchpResults.get(i);
+		
+	}
+	
+	public String productName(int index)
+	{
+		String productname=searchResults.get(index).getAttribute("alt");
+		
+		return productname;
+		
+	}
+	public String addToWishList(int itemIndex,WebElement product)
+	{
+		Waits.waitForPageLoad();
+		Waits.explicitWaitClickable(product);
+	    Waits.explicitWaitClickable(product);
+		Actions action = new Actions(driver);
+		action.moveToElement(product).build().perform();
+		WebElementHandlers.actionsMove(product);
+        Waits.explicitWaitClickable(wishlist);
+        WebElementHandlers.click(wishlisttest.get(itemIndex));
+        Waits.explicitWaitClickable(wishlistAlert);
+        String alertText = wishlistAlert.getText();
+        System.out.println(alertText);
+        return alertText;
+        
+	}
+	
+	public Boolean verifyWishListSuccessMessage(String message,String alertText) {
+			Actions action = new Actions(driver);
+			action.moveToElement(wishlistClose).build().perform();
+			Waits.explicitWaitClickable(wishlistClose);
+			WebElementHandlers.click(wishlistClose);
+			/*JavascriptExecutor executor = (JavascriptExecutor)driver;
+			executor.executeScript("arguments[0].click();", wishlistClose);*/
+			Waits.explicitWaitInvisiblity(wishlistClose);
+			return alertText.equals(message);
+	}
+	public Boolean verifyWishListNonSuccessMessage(String message,String alertText) {
+	    Waits.explicitWaitClickable(wishlistAlert);
+		Waits.explicitWaitClickable(wishlistClose);
+		WebElementHandlers.click(wishlistClose);
+		return alertText.equals(message);
 }
+	public void applyMaterialFilter(String material)
+	{
+		
+		WebElementHandlers.click(getMaterialFilter(material));
+		WebDriverManager.scroll(0, 500);
+		Waits.explicitWaitInvisiblity(loader);
+		WebDriverManager.waitForPageLoad();
+	}
+	
+	public WebElement getMaterialFilter(String option) {
+		WebElement filterOption = null;
+		if (option.equals("cotton")){
+			filterOption = cotton;
+		}
+		return filterOption;
+	}
+	
+	public void viewProduct(int i) {
+		WebElement product = searchcottonResults.get(i);
+		Waits.explicitWaitVisiblity(product);
+		WebElementHandlers.actionsMove(product);
+        clickViewMore(i);
+		WebDriverManager.waitForPageLoad();
+	}
+	
+    public void clickViewMore(int i) {
+    	Waits.explicitWaitClickable(moreButton.get(i));
+		WebElementHandlers.click(moreButton.get(i));
+		WebDriverManager.waitForPageLoad();
+    }
+    
+	public boolean verifyMaterialFilter(String option)
+	{
+		int productsize = searchcottonResults.size();
+		boolean filter=false;
+		for (int i = 0; i <productsize; i++) {
+			viewProduct(i);
+			if (detailcotton.getText().contains(option)) {
+				System.out.println(detailcotton.getText());
+				filter = true;
+			} else {
+				return false;
+			}
+
+			navigateBack();
+			WebDriverManager.waitForPageLoad();
+		}
+		return filter;
+	}
+	
+	public void navigateBack() {
+		driver.navigate().back();
+	}
+	
+	public void selectCategory(String Category)
+	{   
+		if(Category.equals("Tshirts"))
+		{
+		Waits.explicitWaitClickable(tshirtLink);
+		WebElementHandlers.elementClick(tshirtLink);
+		}
+		WebDriverManager.waitForPageLoad();
+		WebElementHandlers.scroll(0, 1000);
+	}
+	public String verifyTshirtselection() 
+	{
+	WebElement te = tshirtText;
+	Waits.explicitWaitVisiblity(te);
+	String tshirt = te.getText();
+	return tshirt;
+	
+	}
+	public void productSelection()
+	{
+			WebElementHandlers.click(large);
+	        Waits.explicitWaitInvisiblity(loader);
+			WebElementHandlers.click(blue);
+			Waits.explicitWaitInvisiblity(loader);
+			WebElementHandlers.click(cotton);
+			Waits.explicitWaitInvisiblity(loader);
+			WebElementHandlers.click(casual);
+			Waits.explicitWaitInvisiblity(loader);
+			WebElementHandlers.click(shrtSleeve);
+			Waits.explicitWaitInvisiblity(loader);
+			WebElementHandlers.click(manufacturer);
+			WebElementHandlers.scroll(0,250);
+			Waits.explicitWaitInvisiblity(loader);
+			WebElementHandlers.click(newcoll);
+			Waits.explicitWaitInvisiblity(loader);
+			
+}
+	public String productAddToCart()
+	{
+		Waits.explicitWaitInvisiblity(loader);
+		WebElementHandlers.jsClick(tshirt);
+		WebDriverManager.waitForPageLoad();
+		Waits.explicitWaitVisiblity(quantitytest);
+		WebElementHandlers.sendText(quantitytest,"2");
+		WebElementHandlers.scroll(0, 500);
+        JavascriptExecutor executor = (JavascriptExecutor) driver;
+		executor.executeScript("arguments[0].click();", AddtoCart);
+		WebElementHandlers.click(AddtoCart);
+        Waits.explicitWaitVisiblity(checkOut);
+        String displayedMsg = productSuccessmsg.getText();
+		
+		return displayedMsg;
+		}
+	
+	public boolean verifyCategoryTshirtSelection(String expectedText)
+	{
+		boolean verify=verifyTshirtselection().contains(expectedText);
+		return verify;
+	}
+	public void CheckOutRedirection()
+	{
+		WebElementHandlers.click(proceedCheckout);
+		WebDriverManager.waitForPageLoad();
+	}
+	public void ContinueShopping(int index)
+	{
+		List<WebElement> product = searchpResults;
+		WebElement productTest = product.get(index);
+		Waits.explicitWaitVisiblity(productTest);
+		Actions action=new Actions(driver);
+		action.moveToElement(productTest).build().perform();
+		WebElementHandlers.actionsMove(productTest);
+		Waits.explicitWaitClickable(moverAddtoCart);
+		WebElementHandlers.click(moverAddtoCart_SK.get(index));
+		Waits.explicitWaitClickable(continueShopping);
+		WebElementHandlers.click(continueShopping);
+		
+	}
+	public boolean verifyContinueShopping(int index)
+	{
+	Waits.explicitWaitClickable(searchpResults.get(index));
+	if(searchpResults.get(index).isDisplayed())
+	{
+	return true;
+	}
+	else
+	{
+		return false;
+	}
+	}
+	public void carttoCheckOut(int index) {
+	List<WebElement> product = searchpResults;
+	WebElement productTest = product.get(index);
+	Waits.explicitWaitVisiblity(productTest);
+	Actions action=new Actions(driver);
+	action.moveToElement(productTest).build().perform();
+	WebElementHandlers.actionsMove(productTest);
+	Waits.explicitWaitClickable(moverAddtoCart);
+	WebElementHandlers.click(moverAddtoCart_SK.get(index));
+	Waits.explicitWaitClickable(checkOut);
+	checkOut.click();
+	WebDriverManager.waitForPageLoad();
+	}
+}
+	
+
